@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { Nav } from '@/components/shell/Nav';
+import { ScenarioProvider } from '@/context/ScenarioContext';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -14,8 +15,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={`${inter.className} bg-slate-50 min-h-screen`}>
-        <Nav />
-        <main className="mx-auto max-w-screen-xl px-6 py-8">{children}</main>
+        <ScenarioProvider>
+          <Nav />
+          <main className="mx-auto max-w-screen-xl px-6 py-8">{children}</main>
+        </ScenarioProvider>
       </body>
     </html>
   );
