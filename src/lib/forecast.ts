@@ -15,17 +15,23 @@ type PriceOverrides = {
   volumeMultiplier?: number;
 };
 
+function getCalendarMonth(scenario: Scenario, absoluteMonth: number): number {
+  const [year, month] = scenario.forecastStartDate.split('-').map(Number);
+  const totalMonths = (year * 12 + month - 1) + (absoluteMonth - 1);
+  return (totalMonths % 12) + 1;
+}
+
 function getSeasonalMultiplier(scenario: Scenario, absoluteMonth: number): number {
-  const monthOfYear = ((absoluteMonth - 1) % 12) + 1;
-  const entry = scenario.seasonality.find((s) => s.month === monthOfYear);
+  const calendarMonth = getCalendarMonth(scenario, absoluteMonth);
+  const entry = scenario.seasonality.find((s) => s.month === calendarMonth);
   return entry?.multiplier ?? 1.0;
 }
 
 function getRampFactor(venue: Venue, absoluteMonth: number): number {
+  const rampMonths = venue.rampMonths ?? 2;
   const monthsActive = absoluteMonth - venue.startMonth;
-  if (monthsActive === 0) return 0.50;
-  if (monthsActive === 1) return 0.75;
-  return 1.0;
+  if (monthsActive >= rampMonths) return 1.0;
+  return 0.50 + (0.50 * monthsActive) / rampMonths;
 }
 
 function getYearIndex(absoluteMonth: number): number {
@@ -57,7 +63,10 @@ export function computeVenueMonth(
   priceOverrides?: PriceOverrides,
   forceSplit?: 'A' | 'B'
 ): MonthResult {
-  if (absoluteMonth < venue.startMonth) {
+  const calendarMonth = getCalendarMonth(scenario, absoluteMonth);
+  const isClosed = venue.closedMonths?.includes(calendarMonth) ?? false;
+
+  if (absoluteMonth < venue.startMonth || isClosed) {
     return { month: absoluteMonth, venueId: venue.id, firstBowls: 0, refills: 0, grossRevenue: 0, cogs: 0, grossProfit: 0, hqGross: 0, venueGross: 0, ookaGross: 0, hqNet: 0 };
   }
 
@@ -133,6 +142,14 @@ export function computeScenarioRollup(
     years.push({ year: y, ...sum });
   }
   return { months, years };
+}
+
+export function absoluteMonthToLabel(forecastStartDate: string, absoluteMonth: number): string {
+  const [year, month] = forecastStartDate.split('-').map(Number);
+  const totalMonths = (year * 12 + month - 1) + (absoluteMonth - 1);
+  const y = Math.floor(totalMonths / 12);
+  const m = (totalMonths % 12) + 1;
+  return new Date(y, m - 1, 1).toLocaleString('en-US', { month: 'short', year: '2-digit' });
 }
 
 export function computeSplitComparison(

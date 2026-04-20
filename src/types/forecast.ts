@@ -19,6 +19,8 @@ export type Venue = {
   revenueModel: RevenueModel;
   splitStructure: SplitId;
   priceMultiplier: number;
+  rampMonths?: number;       // default 2; linear ramp from 50%→100% over N months
+  closedMonths?: number[];   // calendar months (1-12) when venue is fully closed
   notes?: string;
 };
 
@@ -48,6 +50,7 @@ export type Scenario = {
   annualGrowthRate: number;
   annualPriceInflation: number;
   forecastHorizonMonths: number;
+  forecastStartDate: string; // 'YYYY-MM', e.g. '2026-05'
   notes?: string;
 };
 

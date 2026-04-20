@@ -15,6 +15,7 @@ export function makeDefaultScenario(overrides?: Partial<Scenario>): Scenario {
     annualGrowthRate: 0.12,
     annualPriceInflation: 0.03,
     forecastHorizonMonths: 24,
+    forecastStartDate: '2026-05',
     ...overrides,
   };
 }

@@ -1,9 +1,11 @@
 'use client';
 
 import type { ScenarioRollup } from '@/types/forecast';
+import { absoluteMonthToLabel } from '@/lib/forecast';
 
 type Props = {
   rollup: ScenarioRollup;
+  forecastStartDate: string;
   showMonths?: number;
 };
 
@@ -15,7 +17,7 @@ function fmtN(v: number) {
   return new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(v);
 }
 
-export function MonthlyProjectionTable({ rollup, showMonths = 24 }: Props) {
+export function MonthlyProjectionTable({ rollup, forecastStartDate, showMonths = 24 }: Props) {
   const months = rollup.months.slice(0, showMonths);
   return (
     <div className="overflow-x-auto">
@@ -33,7 +35,9 @@ export function MonthlyProjectionTable({ rollup, showMonths = 24 }: Props) {
         <tbody>
           {months.map((m) => (
             <tr key={m.month} className="border-b border-slate-100 hover:bg-slate-50">
-              <td className="py-2 pr-4 font-medium text-slate-700">M{m.month}</td>
+              <td className="py-2 pr-4 font-medium text-slate-700">
+                {absoluteMonthToLabel(forecastStartDate, m.month)}
+              </td>
               <td className="py-2 pr-4 text-right text-slate-600">{fmtN(m.firstBowls)}</td>
               <td className="py-2 pr-4 text-right text-slate-600">{fmtN(m.refills)}</td>
               <td className="py-2 pr-4 text-right text-slate-700">{fmt$(m.grossRevenue)}</td>

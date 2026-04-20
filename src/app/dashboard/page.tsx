@@ -193,7 +193,7 @@ export default function DashboardPage() {
           <CardTitle className="text-sm font-medium text-slate-700">Monthly Projections</CardTitle>
         </CardHeader>
         <CardContent>
-          <MonthlyProjectionTable rollup={activeRollup} />
+          <MonthlyProjectionTable rollup={activeRollup} forecastStartDate={activeScenario.forecastStartDate} />
         </CardContent>
       </Card>
     </div>
