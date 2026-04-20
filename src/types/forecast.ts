@@ -133,8 +133,12 @@ export type SplitComparison = {
 
 export type SplitMode = 'A' | 'B' | 'compare';
 
+export type VolumePreset = 'conservative' | 'medium' | 'high' | 'custom';
+
 export type DashboardViewState = {
   splitMode: SplitMode;
   firstBowlPrice: number;
   refillPrice: number;
+  volumeMultiplier: number;
+  volumePreset: VolumePreset;
 };

@@ -23,4 +23,6 @@ export const DEFAULT_VIEW_STATE: DashboardViewState = {
   splitMode: 'A',
   firstBowlPrice: 75,
   refillPrice: 52.50,
+  volumeMultiplier: 1.0,
+  volumePreset: 'medium',
 };
